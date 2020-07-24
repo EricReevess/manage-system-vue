@@ -64,7 +64,7 @@ export default {
     return {
       asideMenu: [
         {
-          path: '/',
+          path: '/home',
           label: '首页',
           name: 'home',
           icon: 's-home'
@@ -127,6 +127,7 @@ export default {
     }
 
   }
+
   /*切换面板过渡时需要*/
   .el-menu-vertical-demo:not(.el-menu--collapse) {
     width: 200px;
@@ -135,11 +136,12 @@ export default {
   }
 
   .title {
-    height: 80px;
-    background-color: #e7604a;
-    text-align: center;
-    line-height: 80px;
+    height: 60px;
     color: #dfe4ea;
     font-size: 1em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e7604a;
   }
 </style>

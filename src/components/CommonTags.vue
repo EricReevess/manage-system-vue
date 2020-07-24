@@ -4,7 +4,8 @@
       :key="tag.name"
       v-for="tag in tagsList"
       closable
-      :effect="$route.name === tag.name ? 'dark': 'light'"
+      effect="dark"
+      :color="$route.name === tag.name ? '#e7604a': '#909399'"
       :disable-transitions="false"
       @close="handleClose(tag.name)"
       @click="handleClick(tag)">
@@ -44,13 +45,15 @@ export default {
 
 <style lang="scss" scoped>
   .tags {
-    height: 30px;
-    margin-top: 10px;
-    margin-left: 20px;
+    width: 80%;
+    height: 40px;
+    line-height: 40px;
+    background-color: inherit;
   }
 
   .el-tag {
     cursor: pointer;
+    border: none;
   }
 
   .el-tag + .el-tag {

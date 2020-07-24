@@ -1,11 +1,12 @@
 <template>
   <el-row class="header-wrap">
-    <el-col :span="12" class="header">
+    <el-col :span="8" class="header">
       <el-col :span="3">
         <el-button
           type="info"
           :icon="isCollapseAside ? 'el-icon-s-unfold' : 'el-icon-s-fold'"
           size="mini"
+          ref="collapseMenuBtn"
           @click="collapseMenu"/>
       </el-col>
       <el-breadcrumb separator-class="el-icon-arrow-right">
@@ -13,13 +14,13 @@
         <el-breadcrumb-item>{{currentPosition.label}}</el-breadcrumb-item>
       </el-breadcrumb>
     </el-col>
-    <el-col :span="12" class="header options">
+    <el-col :span="16" class="header options">
+      <common-tags/>
       <el-dropdown>
       <span class="el-dropdown-link user-options">
         <el-avatar size="medium" :src="userAvatar"/>
         <span>{{username}}</span>
         <i class="el-icon-arrow-down el-icon--right"/>
-
       </span>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item icon="el-icon-user">个人中心</el-dropdown-item>
@@ -32,9 +33,11 @@
 
 <script>
 import { mapMutations, mapState } from 'vuex'
+import CommonTags from './CommonTags'
 
 export default {
   name: 'CommonHeader',
+  components: { CommonTags },
   data () {
     return {
       // 需要使用模块的方式引入img
@@ -54,7 +57,12 @@ export default {
     }),
     collapseMenu () {
       this.collapseAside()
+      // this.$parent.$parent.$children[1].$children[0].$children[0].$children[1].$children[0].$children[0].chartResize()
+      // console.log(this.$parent.$parent.$children[1].$children[0].$children[0].$children[1].$children[0].$children[0].detectWidth())
     }
+  },
+  mounted () {
+    window.$collapseMenuBtn = this.$refs.collapseMenuBtn
   }
 }
 </script>
@@ -112,7 +120,7 @@ export default {
     }
 
     .options {
-      justify-content: flex-end;
+      justify-content: space-between;
     }
   }
 </style>
