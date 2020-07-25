@@ -27,14 +27,13 @@ export default {
 
 <style lang="scss" scoped>
   .el-container {
-    height: 100%;
-    min-width: 1024px;
-    min-height: 768px;
+    height: 100vh;
   }
 
   .el-aside {
     width: 200px;
     background-color: #343843;
+    overflow: hidden;
   }
 
   .el-header {
@@ -42,8 +41,10 @@ export default {
   }
 
   .el-main {
-    overflow: hidden;
-    background-color: #ecf0f1;
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
     padding: 10px;
+    background-color: #ecf0f1;
   }
 </style>

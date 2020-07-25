@@ -6,6 +6,7 @@
 <script>
 import echarts from 'echarts'
 import '../assets/echart-style/macarons'
+import { mapState } from 'vuex'
 
 export default {
   name: 'Echarts',
@@ -31,6 +32,11 @@ export default {
       axisOption: {
         tooltip: {
           trigger: 'axis'
+        },
+        grid: {
+          left: '60px',
+          right: '20px',
+          bottom: '15%'
         },
         legend: {
           data: []
@@ -63,7 +69,7 @@ export default {
           {
             name: '项目类型',
             type: 'pie',
-            radius: '55%',
+            radius: '60%',
             center: ['50%', '60%'],
             data: [],
             emphasis: {
@@ -79,6 +85,9 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      isCollapseAside: state => state.headerNav.isCollapseAside
+    }),
     // 判断使用的是什么类型的图表
     options () {
       return this.isAxisChart ? this.axisOption : this.pieOption
@@ -90,6 +99,14 @@ export default {
         this.initEchart()
       },
       deep: true
+    },
+    // 监听是否改变侧边栏
+    isCollapseAside: {
+      handler: function () {
+        setTimeout(() => {
+          this.resizeChart()
+        }, 300)
+      }
     }
   },
   methods: {
@@ -113,20 +130,18 @@ export default {
         this.pieOption.legend.data = this.chartData.seriesData.map(item => item.name)
       }
     },
-    chartResize () {
-      this.echartObj.resize()
+    resizeChart () {
+      if (this.echartObj) {
+        this.echartObj.resize()
+      }
     }
   },
   mounted () {
-    window.$collapseMenuBtn.$on('click', () => {
-      setTimeout(() => {
-        this.chartResize()
-      }, 300)
-    })
-
-    window.addEventListener('resize', () => {
-      this.chartResize()
-    })
+    window.addEventListener('resize', this.resizeChart)
+  },
+  destroyed () {
+    // 销毁事件
+    window.removeEventListener('resize', this.resizeChart)
   }
 }
 </script>

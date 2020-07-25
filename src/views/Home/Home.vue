@@ -1,5 +1,5 @@
 <template>
-  <el-row :gutter="10" class="home-wrap">
+  <el-row :gutter="10" class="home-wrap" v-loading="isLoading">
     <el-col :span="7" class="home-left flex-column">
       <el-card class="box-card info" shadow="hover">
         <div class="user">
@@ -30,6 +30,7 @@
           show-overflow-tooltip
           stripe>
           <el-table-column
+            show-overflow-tooltip
             v-for="(val,key) in tableLabel"
             :key="key"
             :prop="key"
@@ -110,7 +111,8 @@ export default {
   components: { Echarts },
   data () {
     return {
-      canOperate: false,
+      canOperate: true,
+      isLoading: true,
       userData: {},
       projectStatus: [],
       tableLabel: {},
@@ -148,6 +150,7 @@ export default {
           this.chartData.order.xAxisData = homeData.orderData.date
           this.formatOrderSeries(homeData.orderData.data, this.chartData.order.seriesData)
           this.formatUserSeries(homeData.userHistoryData, this.chartData.user, 'bar')
+          this.isLoading = false
         },
         err => {
           console.log(err)
@@ -175,6 +178,7 @@ export default {
       targetData.seriesData.push({
         name: '活跃用户',
         type: type,
+        barGap: '0%',
         data: originalData.map(item => item.active)
       })
     },

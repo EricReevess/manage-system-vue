@@ -1,6 +1,6 @@
 export default {
   state: {
-    isCollapseAside: false, // 折叠侧边菜单标志
+    isCollapseAside: true, // 折叠侧边菜单标志
     currentPosition: { // 保存当前位置
       path: '/',
       label: '首页',

@@ -1,7 +1,7 @@
 <template>
   <el-col>
     <el-row class="title">
-      <h2 v-if="!isCollapseAside">控制台</h2>
+      <h2 v-if="!isCollapseAside">Dashboard</h2>
       <i v-else :class="`el-icon-s-promotion`"/>
     </el-row>
     <el-menu
@@ -14,9 +14,9 @@
       router
       class="el-menu-vertical-demo">
       <el-menu-item
-        @click="HandleMenuClick(item)"
-        :index="item.path"
         v-for="item in asideMainMenu"
+        @click="handleMenuClick(item)"
+        :index="item.path"
         :key="item.path">
         <i :class="`el-icon-${ item.icon }`"/>
         <span slot="title">{{item.label}}</span>
@@ -33,7 +33,7 @@
           v-for="subItem in item.children"
           :key="subItem.path">
           <el-menu-item
-            @click="HandleMenuClick(subItem)"
+            @click="handleMenuClick(subItem)"
             :index="subItem.path">
             {{subItem.label}}
           </el-menu-item>
@@ -104,7 +104,7 @@ export default {
     ...mapMutations({
       selectMenu: 'selectMenu'
     }),
-    HandleMenuClick (menuItem) {
+    handleMenuClick (menuItem) {
       this.selectMenu(menuItem)
     }
   }
@@ -114,6 +114,7 @@ export default {
 <style lang="scss" scoped>
   .el-col {
     height: 100vh;
+    overflow: hidden;
     background-color: #343843;
   }
 
@@ -137,11 +138,17 @@ export default {
 
   .title {
     height: 60px;
-    color: #dfe4ea;
-    font-size: 1em;
     display: flex;
+    color: #dfe4ea;
+    font-size: 1.2em;
     align-items: center;
     justify-content: center;
     background-color: #e7604a;
+
+    h2, i {
+      position: absolute;
+      letter-spacing: 2px;
+      white-space: nowrap;
+    }
   }
 </style>

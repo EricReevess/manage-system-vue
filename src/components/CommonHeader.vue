@@ -57,12 +57,7 @@ export default {
     }),
     collapseMenu () {
       this.collapseAside()
-      // this.$parent.$parent.$children[1].$children[0].$children[0].$children[1].$children[0].$children[0].chartResize()
-      // console.log(this.$parent.$parent.$children[1].$children[0].$children[0].$children[1].$children[0].$children[0].detectWidth())
     }
-  },
-  mounted () {
-    window.$collapseMenuBtn = this.$refs.collapseMenuBtn
   }
 }
 </script>
