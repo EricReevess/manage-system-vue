@@ -1,11 +1,14 @@
 <template>
   <div id="app">
-    <router-view/>
+    <main-page/>
   </div>
 </template>
 
 <script>
-export default {}
+import MainPage from './views/MainPage'
+export default {
+  components: { MainPage }
+}
 </script>
 
 <style lang="scss">
@@ -15,9 +18,10 @@ export default {}
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-  @media screen and (max-width: 1366px) {
+  @media screen and (max-width: 1280px) {
     #app {
-      width: 1366px;
+      width: 1280px;
+      height:800px ;
     }
   }
 </style>

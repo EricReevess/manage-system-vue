@@ -8,7 +8,7 @@
       default-active="1"
       background-color="#343843"
       text-color="#8395a7"
-      active-text-color="#dfe6e9"
+      active-text-color="#e7604a"
       :collapse="isCollapseAside"
       collapse-transition
       router

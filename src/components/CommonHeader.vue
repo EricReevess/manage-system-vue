@@ -11,7 +11,11 @@
       </el-col>
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <!--        <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>-->
-        <el-breadcrumb-item>{{currentPosition.label}}</el-breadcrumb-item>
+        <el-breadcrumb-item>
+          <span class="breadcrumb-nav">
+            {{currentPosition.label}}
+          </span>
+        </el-breadcrumb-item>
       </el-breadcrumb>
     </el-col>
     <el-col :span="16" class="header options">
@@ -121,11 +125,11 @@ export default {
 </style>
 <style lang="scss">
   /*单独重写UI组件内部样式*/
-  .el-breadcrumb__inner a, .el-breadcrumb__inner.is-link {
+  .el-breadcrumb__item:last-child .el-breadcrumb__inner {
     color: #dfe4ea;
   }
 
-  .el-breadcrumb__inner {
+  .breadcrumb-nav {
     color: #95a5a6;
     font-size: 20px;
   }

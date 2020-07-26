@@ -101,11 +101,11 @@ export default {
   methods: {
     handleEdit (row) {
       // console.log(row)
-      this.$emit('tableEdit', row)
+      this.$emit('tableEdit', this.deepClone(row))
     },
     handleDelete (row) {
       // console.log(row)
-      this.$emit('tableDel', row)
+      this.$emit('tableDel', row.id)
     },
     tableFiltersData: function (key) {
       const res = new Map()
@@ -115,6 +115,21 @@ export default {
     filterHandler (value, row, column) {
       const property = column.property
       return row[property] === value
+    },
+    deepClone (obj) {
+      if (obj === null) return null
+      if (typeof obj !== 'object') return obj
+      if (obj.constructor === Date) return new Date(obj)
+      const newObj = new obj.constructor() // 保持继承链
+      for (const key in obj) {
+        // eslint-disable-next-line no-prototype-builtins
+        if (obj.hasOwnProperty(key)) { // 不遍历其原型链上的属性
+          const val = obj[key]
+          // eslint-disable-next-line no-caller
+          newObj[key] = typeof val === 'object' ? arguments.callee(val) : val // 使用arguments.callee解除与函数名的耦合
+        }
+      }
+      return newObj
     }
   }
 }

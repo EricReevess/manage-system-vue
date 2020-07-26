@@ -7,7 +7,7 @@
     <!--    利用表单配置数据formLabel来配置所需要的表单组件-->
     <el-form-item
       v-for="(item, index) in formLabel"
-      :label="(item.type === 'submit' || item.type === 'reset') ? '': item.label  "
+      :label="(item.type === 'submit' || item.type === 'reset') ? ' ': item.label  "
       :key="index"
       :prop="item.key"
     >
@@ -36,6 +36,7 @@
       <el-date-picker
         v-if="item.type === 'date-picker'"
         type="date"
+        value-format="yyyy-MM-dd"
         :placeholder="`选择${item.label}`"
         v-model="privateForm[item.key]"
         :style="item.width? `width: ${item.width};`: null"/>

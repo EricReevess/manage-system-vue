@@ -2,7 +2,11 @@
   <div class="user-manage">
     <div class="manage-header">
       <div class="add-user">
-        <el-button type="primary" @click="dialog = true">新增用户</el-button>
+        <el-button
+          type="primary"
+          @click="drawerOpenHandler({title: '添加新用户',type: '添加'})">
+          新增用户
+        </el-button>
       </div>
       <common-form :form-label="searchFormLabel" :form="searchFormData"/>
     </div>
@@ -13,29 +17,28 @@
         :tableConfig="tableConfig"
         can-operate
         showIndex
-        @tableEdit="tableEdit"
-        @tableDel="tableDel"
+        @tableEdit="tableEditHandler($event,{title: '编辑用户信息',type: '修改'})"
+        @tableDel="tableDelHandler"
       />
     </div>
     <el-drawer
-      size="30%"
+      size="400px"
       ref="drawer"
       direction="ltr"
       :visible.sync="dialog"
-      :before-close="handleClose"
+      :before-close="drawerCloseHandler"
       :with-header="false"
       custom-class="demo-drawer"
     >
       <div class="drawer-content">
         <slot name="title">
-          <h1 class="add-title">添加新用户</h1>
+          <h1 class="add-title">{{dialogConfig.title}}</h1>
         </slot>
-        <div class="demo-drawer__footer">
-          <el-button @click="cancelForm">取消</el-button>
-          <el-button type="primary" @click="submitForm">
-            提交
-          </el-button>
-        </div>
+        <common-form
+          :inline="false"
+          :form-label="formLabel"
+          :form="formData"
+          @formSubmit="tableAddHandler"/>
       </div>
     </el-drawer>
   </div>
@@ -51,6 +54,10 @@ export default {
   data () {
     return {
       dialog: false,
+      dialogConfig: {
+        title: '',
+        type: ''
+      },
       searchFormLabel: [
         {
           type: 'search', // 表单控件类型,这里将input增加了一个搜索的类型
@@ -67,8 +74,55 @@ export default {
       searchFormData: {
         keyword: ''
       },
-      formLabel: {},
-      formData: {},
+      formLabel: [
+        {
+          type: 'input',
+          label: '姓名',
+          key: 'name'
+        },
+        {
+          type: 'input',
+          label: '年龄',
+          key: 'age'
+
+        },
+        {
+          type: 'radio-group',
+          label: '性别',
+          key: 'sex',
+          radioLabels: [
+            '男',
+            '女'
+          ]
+        },
+        {
+          type: 'date-picker',
+          label: '生日',
+          key: 'birth'
+
+        },
+        {
+          type: 'textarea',
+          label: '地址',
+          key: 'addr'
+
+        },
+        {
+          type: 'submit',
+          width: '100%'
+        },
+        {
+          type: 'reset',
+          width: '100%'
+        }
+      ],
+      formData: {
+        name: '',
+        age: '',
+        sex: '',
+        birth: '',
+        addr: ''
+      },
       tableLabel: {
         name: '姓名',
         age: '年龄',
@@ -86,37 +140,53 @@ export default {
     }
   },
   methods: {
-    handleClose () {
+    drawerOpenHandler (config) {
+      this.dialog = true
+      this.dialogConfig = config
+    },
+    drawerCloseHandler () {
       this.$confirm('确定要关闭吗？')
         .then(_ => {
           this.$message({
             type: 'info',
-            message: '取消添加'
+            message: `取消${this.dialogConfig.type}`
           })
           this.dialog = false
         })
         .catch(() => {
         })
     },
-    cancelForm () {
+    drawerCancelHandler () {
       this.dialog = false
       this.$message({
         type: 'info',
-        message: '取消添加'
+        message: `取消${this.dialogConfig.type}`
       })
     },
-    submitForm () {
+    drawerSubmitHandler () {
       this.dialog = false
+      // 在此处理 修改 新增 操作
       this.$message({
         type: 'success',
-        message: '添加成功'
+        message: `${this.dialog.type}成功`
       })
       // this.$refs.drawer.closeDrawer()
     },
-    tableEdit (val) {
+    tableAddHandler (val) {
+      this.drawerSubmitHandler()
+      console.log(val)
+      // 清空对象
+      for (const key in this.formData) {
+        this.formData[key] = ''
+      }
+    },
+    tableEditHandler (val, config) {
+      this.dialogConfig = config
+      this.formData = val
+      this.dialog = true
       console.log(val)
     },
-    tableDel (val) {
+    tableDelHandler (val) {
       console.log(val)
     },
     getTableData () {
