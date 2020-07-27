@@ -1,7 +1,7 @@
 <template>
   <el-form
     :inline="inline"
-    :model="privateForm"
+    :model="form"
     ref="ruleForm"
     class="demo-form-inline">
     <!--    利用表单配置数据formLabel来配置所需要的表单组件-->
@@ -14,18 +14,18 @@
       <el-input
         v-if="item.type === 'input'"
         :placeholder="`请输入${item.label}`"
-        v-model="privateForm[item.key]"
+        v-model="form[item.key]"
         :style="item.width? `width: ${item.width};`: null"
       />
       <el-input
         v-if="item.type === 'search'"
         :placeholder="`请输入${item.searchKey}`"
-        v-model="privateForm[item.key]"
+        v-model="form[item.key]"
         :style="item.width? `width: ${item.width};`: null"
       />
       <el-select
         v-if="item.type === 'select'"
-        v-model="privateForm[item.key]"
+        v-model="form[item.key]"
         :placeholder="`请选择${item.label}`">
         <el-option
           v-for="(optionItem,index) in item.options "
@@ -38,19 +38,19 @@
         type="date"
         value-format="yyyy-MM-dd"
         :placeholder="`选择${item.label}`"
-        v-model="privateForm[item.key]"
+        v-model="form[item.key]"
         :style="item.width? `width: ${item.width};`: null"/>
       <el-time-picker
         v-if="item.type === 'time-picker'"
         :placeholder="`选择${item.label}`"
-        v-model="privateForm[item.key]"
+        v-model="form[item.key]"
         :style="item.width? `width: ${item.width};`: null"/>
       <el-switch
         v-if="item.type === 'switch'"
-        v-model="privateForm[item.key]"/>
+        v-model="form[item.key]"/>
       <el-checkbox-group
         v-if="item.type === 'checkbox-group'"
-        v-model="privateForm[item.key]">
+        v-model="form[item.key]">
         <el-checkbox
           border
           v-for="(label, index) in item.checkboxLabels"
@@ -60,16 +60,18 @@
       </el-checkbox-group>
       <el-radio-group
         v-if="item.type === 'radio-group'"
-        v-model="privateForm[item.key]">
+        v-model="form[item.key]">
         <el-radio
-          v-for="(labels,index) in item.radioLabels"
+          v-for="(subItem,index) in item.radioLabels"
           :key="index"
-          :label="labels"/>
+          :label="subItem.value">
+          {{subItem.label}}
+        </el-radio>
       </el-radio-group>
       <el-input
         v-if="item.type === 'textarea'"
         type="textarea"
-        v-model="privateForm[item.key]"
+        v-model="form[item.key]"
         :style="item.width? `width: ${item.width};`: null"/>
       <el-button
         v-if="item.type === 'submit'"
@@ -109,22 +111,14 @@ export default {
       default: true
     }
   },
-  data () {
-    return {
-      privateForm: {}
-    }
-  },
   methods: {
     onSubmit () {
       // 在这触发父级传递的函数，或者触发父级的自定义事件
-      this.$emit('formSubmit', this.privateForm)
+      this.$emit('formSubmit', this.form)
     },
     resetForm (formName) {
       this.$refs[formName].resetFields()
     }
-  },
-  mounted () {
-    this.privateForm = this.form
   }
 }
 </script>

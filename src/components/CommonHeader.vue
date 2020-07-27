@@ -20,7 +20,7 @@
     </el-col>
     <el-col :span="16" class="header options">
       <common-tags/>
-      <el-dropdown>
+      <el-dropdown @command="handleCommand">
       <span class="el-dropdown-link user-options">
         <el-avatar size="medium" :src="userAvatar"/>
         <span>{{username}}</span>
@@ -28,7 +28,7 @@
       </span>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item icon="el-icon-user">个人中心</el-dropdown-item>
-          <el-dropdown-item icon="el-icon-switch-button">注销</el-dropdown-item>
+          <el-dropdown-item icon="el-icon-switch-button" command="logout">注销</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </el-col>
@@ -57,10 +57,22 @@ export default {
   },
   methods: {
     ...mapMutations({
-      collapseAside: 'collapseAside'
+      collapseAside: 'collapseAside',
+      clearMenu: 'clearMenu',
+      clearToken: 'clearToken'
     }),
     collapseMenu () {
       this.collapseAside()
+    },
+    handleCommand (command) {
+      if (command === 'logout') {
+        this.logoutHandler()
+      }
+    },
+    logoutHandler () {
+      this.clearMenu()
+      this.clearToken()
+      location.reload() // 刷新浏览器
     }
   }
 }

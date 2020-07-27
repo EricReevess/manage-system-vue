@@ -5,33 +5,9 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
-    redirect: '/home'
-  },
-  {
-    path: '/home',
-    name: 'home',
-    component: () => import('../views/Home/Home')
-  },
-  {
-    path: '/project-manage',
-    name: 'projectManage',
-    component: () => import('../views/ProjectManage/ProjectManage')
-  },
-  {
-    path: '/user-manage',
-    name: 'userManage',
-    component: () => import('../views/UserManage/UserManage')
-  },
-  {
-    path: '/other-page1',
-    name: 'otherPage1',
-    component: () => import('../views/Other/OtherPage1')
-  },
-  {
-    path: '/other-page2',
-    name: 'otherPage2',
-    component: () => import('../views/Other/OtherPage2')
+    path: '/login',
+    name: 'login',
+    component: () => import('../views/Login')
   }
 ]
 // 解决ElementUI导航栏中的vue-router在3.0版本以上重复点菜单报错问题

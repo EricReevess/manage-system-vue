@@ -48,6 +48,7 @@ export default {
       return true
     })
     const pageList = mockList.filter((item, index) => index < limit * page && index >= limit * (page - 1))
+    console.log('pagelist', pageList)
     return {
       code: 20000,
       count: mockList.length,
@@ -83,7 +84,7 @@ export default {
    * @return {*}
    */
   deleteUser: config => {
-    const { id } = param2Obj(config.url)
+    const id = config.body
     if (!id) {
       return {
         code: -999,
@@ -93,7 +94,10 @@ export default {
       List = List.filter(u => u.id !== id)
       return {
         code: 20000,
-        message: '删除成功'
+        data: {
+          message: '删除成功'
+        }
+
       }
     }
   },
@@ -120,7 +124,9 @@ export default {
    */
   updateUser: config => {
     const { id, name, addr, age, birth, sex } = JSON.parse(config.body)
+    console.log(config.body)
     const sex_num = parseInt(sex)
+    console.log(sex, sex_num)
     List.some(u => {
       if (u.id === id) {
         u.name = name

@@ -1,10 +1,24 @@
 <template>
   <div class="user-manage">
+    <el-dialog
+      width="500px"
+      :title="dialogTypes[dialogType]"
+      :before-close="dialogCloseHandler"
+      :visible.sync="dialogFormVisible">
+      <common-form
+        :inline="false"
+        :form-label="formLabel"
+        :form.sync="dialogFormData"/>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogCloseHandler">取 消</el-button>
+        <el-button type="primary" @click="dialogFormSubmit">提 交</el-button>
+      </div>
+    </el-dialog>
     <div class="manage-header">
       <div class="add-user">
         <el-button
           type="primary"
-          @click="drawerOpenHandler({title: '添加新用户',type: '添加'})">
+          @click="tableAddHandler">
           新增用户
         </el-button>
       </div>
@@ -17,30 +31,10 @@
         :tableConfig="tableConfig"
         can-operate
         showIndex
-        @tableEdit="tableEditHandler($event,{title: '编辑用户信息',type: '修改'})"
+        @tableEdit="tableEditHandler"
         @tableDel="tableDelHandler"
       />
     </div>
-    <el-drawer
-      size="400px"
-      ref="drawer"
-      direction="ltr"
-      :visible.sync="dialog"
-      :before-close="drawerCloseHandler"
-      :with-header="false"
-      custom-class="demo-drawer"
-    >
-      <div class="drawer-content">
-        <slot name="title">
-          <h1 class="add-title">{{dialogConfig.title}}</h1>
-        </slot>
-        <common-form
-          :inline="false"
-          :form-label="formLabel"
-          :form="formData"
-          @formSubmit="tableAddHandler"/>
-      </div>
-    </el-drawer>
   </div>
 </template>
 
@@ -53,10 +47,12 @@ export default {
   components: { CommonTable, CommonForm },
   data () {
     return {
-      dialog: false,
-      dialogConfig: {
-        title: '',
-        type: ''
+      dialogFormVisible: false,
+      dialogType: 'add',
+      dialogTypes: {
+        add: '添加',
+        edit: '修改',
+        del: '删除'
       },
       searchFormLabel: [
         {
@@ -91,8 +87,14 @@ export default {
           label: '性别',
           key: 'sex',
           radioLabels: [
-            '男',
-            '女'
+            {
+              label: '女',
+              value: 0
+            },
+            {
+              label: '男',
+              value: 1
+            }
           ]
         },
         {
@@ -106,17 +108,9 @@ export default {
           label: '地址',
           key: 'addr'
 
-        },
-        {
-          type: 'submit',
-          width: '100%'
-        },
-        {
-          type: 'reset',
-          width: '100%'
         }
       ],
-      formData: {
+      dialogFormData: {
         name: '',
         age: '',
         sex: '',
@@ -140,54 +134,75 @@ export default {
     }
   },
   methods: {
-    drawerOpenHandler (config) {
-      this.dialog = true
-      this.dialogConfig = config
+    dialogFormSubmit () {
+      // 在这里调用接口提交dialogFormData数据
+      if (this.dialogType === 'edit') {
+        this.dialogFormData.sex = this.dialogFormData.sex ? '男' : '女'
+        const temp = this.tableData.filter(item => {
+          if (item.id === this.dialogFormData.id) {
+            return item
+          }
+        })
+        console.log(JSON.stringify(temp[0]))
+        console.log(JSON.stringify(this.dialogFormData))
+        if (JSON.stringify(temp[0]) === JSON.stringify(this.dialogFormData)) {
+          this.$message({
+            showClose: true,
+            type: 'warning',
+            center: true,
+            message: '您未做任何修改'
+          })
+          this.dialogFormData.sex = this.dialogFormData.sex === '女' ? 0 : 1
+          return
+        }
+      }
+      this.dialogFormData.sex = this.dialogFormData.sex === '女' ? 0 : 1
+      this.operateTableData(this.dialogType, this.dialogFormData)
+      this.dialogFormVisible = false
     },
-    drawerCloseHandler () {
-      this.$confirm('确定要关闭吗？')
+    dialogCloseHandler () {
+      this.$confirm(`确定要取消${this.dialogTypes[this.dialogType]}吗？`, {
+        distinguishCancelAndClose: true,
+        confirmButtonText: `放弃${this.dialogTypes[this.dialogType]}`,
+        cancelButtonText: `继续${this.dialogTypes[this.dialogType]}`
+      })
         .then(_ => {
           this.$message({
-            type: 'info',
-            message: `取消${this.dialogConfig.type}`
+            showClose: true,
+            type: 'warning',
+            center: true,
+            message: `放弃${this.dialogTypes[this.dialogType]}`
           })
-          this.dialog = false
+          this.dialogFormVisible = false
+          this.clearFormData()
         })
         .catch(() => {
         })
     },
-    drawerCancelHandler () {
-      this.dialog = false
-      this.$message({
-        type: 'info',
-        message: `取消${this.dialogConfig.type}`
-      })
+    tableAddHandler () {
+      this.dialogType = 'add'
+      this.dialogFormVisible = true
     },
-    drawerSubmitHandler () {
-      this.dialog = false
-      // 在此处理 修改 新增 操作
-      this.$message({
-        type: 'success',
-        message: `${this.dialog.type}成功`
-      })
-      // this.$refs.drawer.closeDrawer()
-    },
-    tableAddHandler (val) {
-      this.drawerSubmitHandler()
-      console.log(val)
-      // 清空对象
-      for (const key in this.formData) {
-        this.formData[key] = ''
-      }
-    },
-    tableEditHandler (val, config) {
-      this.dialogConfig = config
-      this.formData = val
-      this.dialog = true
-      console.log(val)
+    tableEditHandler (val) {
+      this.dialogType = 'edit'
+      val.sex = val.sex === '女' ? 0 : 1
+      this.dialogFormData = val
+      this.dialogFormVisible = true
     },
     tableDelHandler (val) {
+      this.dialogType = 'del'
+      this.$confirm('确定要删除吗？')
+        .then(_ => {
+          this.operateTableData(this.dialogType, val)
+        })
+        .catch(() => {
+        })
       console.log(val)
+    },
+    clearFormData () {
+      for (const key in this.dialogFormData) {
+        this.dialogFormData[key] = ''
+      }
     },
     getTableData () {
       this.tableConfig.isLoading = true
@@ -199,17 +214,34 @@ export default {
       }).then(
         res => {
           const { list } = res.data
-          console.log(this.tableData)
           this.tableData = list.map(item => {
-            item.sex = item.sex ? '女' : '男'
+            item.sex = !item.sex ? '女' : '男'
             return item
           })
+          console.log(this.tableData === list)
+          console.log()
           this.tableConfig.total = res.data.count
           this.tableConfig.isLoading = false
           console.log(res)
         },
         err => {
           console.log(err)
+        }
+      )
+    },
+    operateTableData (operateType, data) {
+      this.$httpRequest.post(`/user/${operateType}`, data).then(
+        res => {
+          if (res.data.code === 20000) {
+            this.$message({
+              showClose: true,
+              type: 'success',
+              center: true,
+              message: res.data.data.message
+            })
+            this.clearFormData()
+            this.getTableData()
+          }
         }
       )
     }

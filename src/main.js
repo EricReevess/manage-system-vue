@@ -16,8 +16,21 @@ Vue.use(ElementUI)
 Vue.config.productionTip = false
 Vue.prototype.$httpRequest = HttpHandler // 将axios实例拦截器挂载到Vue上,访问this.$httpRequest
 
+router.beforeEach((to, from, next) => {
+  store.commit('getToken')
+  const token = store.state.user.token
+  if (!token && to.name !== 'login') {
+    next({ name: 'login' })
+  } else {
+    next()
+  }
+})
+
 new Vue({
   router,
   store,
-  render: h => h(App)
+  render: h => h(App),
+  created () { // 在刷新页面的时候触发动态路由
+    store.commit('addMenu', router)
+  }
 }).$mount('#app')

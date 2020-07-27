@@ -50,14 +50,15 @@ export default {
   name: 'CommonAside',
   computed: {
     ...mapState({
-      isCollapseAside: state => state.headerNav.isCollapseAside
+      isCollapseAside: state => state.headerNav.isCollapseAside,
+      menu: state => state.headerNav.menu
     }),
     // 不将v-if 和 v-for 同时使用
     asideSubMenu () {
-      return this.asideMenu.filter(item => item.children)
+      return this.menu.filter(item => item.children)
     },
     asideMainMenu () {
-      return this.asideMenu.filter(item => !item.children)
+      return this.menu.filter(item => !item.children)
     }
   },
   data () {
